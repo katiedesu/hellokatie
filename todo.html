@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript">
+</script>
+</head>
+
+<body>
+<h1>Todo List</h1>
+    <div id="todoList"></div>
+<hr>
+    <input type="text" id="todoDescription" placeholder="Add a todo here"/>
+    <button id="addTodo">Add</button>
+    
+    <div>Remaining tasks:<a id="remainingCount">0</a></div>
+    <div>Completed tasks:<a id="completedCount">0</a></div>
+<script >
+
+var totalTasks = 0;
+
+function addToList(todoItem, todoDescription) {
+    var newTodo = document.createElement("div");
+    var todoCheckbox = document.createElement("input");
+    todoCheckbox.setAttribute('type', 'checkbox');
+    todoCheckbox.setAttribute('name', 'oneCheckbox');
+    todoCheckbox.setAttribute('onchange','changeHandler()');    
+    newTodo.appendChild(todoCheckbox);
+    newTodo.innerHTML = newTodo.innerHTML + todoDescription + '  ';
+    
+
+    var removeTodoBtn = document.createElement("button");
+    var btnText = document.createTextNode("Remove");
+    removeTodoBtn.appendChild(btnText);
+
+    newTodo.appendChild(removeTodoBtn);
+    todoList.appendChild(newTodo);
+    totalTasks = getTotal();
+    showRemainingTasks(totalTasks);
+
+    
+    //todo: doesn't update total correctly when removing completed task
+    //todo: this should probably go somewhere else
+    removeTodoBtn.addEventListener('click',function(event) {
+        newTodo.parentNode.removeChild(newTodo);
+        totalTasks = getTotal();
+        showRemainingTasks(totalTasks);
+
+    });
+}
+
+function changeHandler() {
+    if('input[name="oneCheckbox"].checked') {
+        var total = getTotal();
+        showRemainingTasks(total);    
+    } 
+}
+
+var addTodo = document.getElementById("addTodo");
+addTodo.onclick = function() {
+    var todoDescription =  
+        document.getElementById("todoDescription").value;
+    
+    if (!todoDescription || todoDescription == "") {
+        return false;
+    }
+
+    addToList(document.getElementById("todoList"), todoDescription);
+};
+
+function showRemainingTasks(total) {
+    var showTotal = document.getElementById("remainingCount");
+    var doneTasks = getDoneTotal();
+    var remaining = total - doneTasks;
+    showTotal.innerHTML = remaining;
+
+}
+
+function getDoneTotal() {
+    var showTotal = document.getElementById("completedCount");
+    
+    var checkboxes = document.getElementsByTagName("input");
+    var count = 0;
+
+    for (var i=0; i<checkboxes.length; i++) {
+        if(checkboxes[i].type == "checkbox" && checkboxes[i].checked === true) {
+            count++;
+            showTotal.innerHTML = count;
+        }
+    }
+    
+    return count;
+}
+
+function getTotal() {
+    
+    var checkboxes = document.getElementsByTagName("input");
+    var count = 0;
+
+    for (var i=0; i<checkboxes.length; i++) {
+        if(checkboxes[i].type == "checkbox") {
+            count++;
+        }
+    }
+    return count;
+ 
+}
+
+</script>
+
+</body>
+</html>
